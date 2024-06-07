@@ -10,7 +10,7 @@ import {
 import Link from "next/link";
 import PageHeader from "../_components/PageHeader";
 import db from "@/db/db";
-import { CheckCircle2, MoreVertical } from "lucide-react";
+import { CheckCircle2, MoreVertical, XCircle } from "lucide-react";
 import { formatCurrency, formatNumber } from "@/lib/formatters";
 import { DropdownMenu,DropdownMenuContent,DropdownMenuItem,DropdownMenuTrigger,DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { ActiveToggleDropdownItem, DeleteDropdownItem } from "./_components/ProductAction";
@@ -73,6 +73,7 @@ async function ProductsTable() {
               ) : (
                 <>
                   <span className="sr-only">Unavailable</span>
+                  <XCircle className="stroke-destructive"/>
                 </>
               )}
             </TableCell>
