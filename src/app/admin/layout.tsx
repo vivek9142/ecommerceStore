@@ -1,5 +1,7 @@
 import { Nav, NavLink } from "@/components/Nav";
 
+//this line allows app to render dyamically 
+//no caching is done here like isr, ssr
 export const dynamic = "force-dynamic";
 
 export default function AdminLayout({
