@@ -4,6 +4,7 @@ import { z } from "zod";
 import fs from "fs/promises";
 import db from "@/db/db";
 import { notFound, redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 const fileSchema = z.instanceof(File, { message: "Required" });
 const imageSchema = fileSchema.refine(
@@ -46,6 +47,10 @@ export async function addProduct(prevState: unknown, formData: FormData) {
     },
   });
 
+  // this makes sure the cache revalidates when new products are created.
+  revalidatePath("/");
+  revalidatePath("/products");
+
   redirect("/admin/products");
 }
 
@@ -54,7 +59,11 @@ const editSchema = addSchema.extend({
   image: imageSchema.optional(),
 });
 
-export async function updateProduct(id: string,prevState:unknown, formData: FormData) {
+export async function updateProduct(
+  id: string,
+  prevState: unknown,
+  formData: FormData
+) {
   const result = editSchema.safeParse(Object.fromEntries(formData.entries()));
   if (result.success === false) return result.error.formErrors.fieldErrors;
 
@@ -75,20 +84,18 @@ export async function updateProduct(id: string,prevState:unknown, formData: Form
   let imagePath = product.imagePath;
 
   if (data.image != null && data.image.size > 0) {
-    await fs.unlink(`public${product.imagePath}`)
-    
+    await fs.unlink(`public${product.imagePath}`);
+
     await fs.mkdir("public/products", { recursive: true });
-  imagePath = `/products/${crypto.randomUUID()}-${data.image.name}`;
-  await fs.writeFile(
-    `public${imagePath}`,
-    Buffer.from(await data.image.arrayBuffer())
-  );
+    imagePath = `/products/${crypto.randomUUID()}-${data.image.name}`;
+    await fs.writeFile(
+      `public${imagePath}`,
+      Buffer.from(await data.image.arrayBuffer())
+    );
   }
 
-  
-
   await db.product.update({
-    where:{id},
+    where: { id },
     data: {
       name: data.name,
       description: data.description,
@@ -97,6 +104,10 @@ export async function updateProduct(id: string,prevState:unknown, formData: Form
       imagePath,
     },
   });
+
+  // this makes sure the cache revalidates when products are updated.
+  revalidatePath("/");
+  revalidatePath("/products");
 
   redirect("/admin/products");
 }
@@ -111,6 +122,10 @@ export async function toggleProductAvailability(
       isAvailableForPurchase,
     },
   });
+
+  // this makes sure the cache revalidates when products availability is updated.
+  revalidatePath("/");
+  revalidatePath("/products");
 }
 
 export async function deleteProduct(id: string, disabled: boolean) {
@@ -120,4 +135,8 @@ export async function deleteProduct(id: string, disabled: boolean) {
 
   await fs.unlink(product.filePath);
   await fs.unlink(`public/${product.imagePath}`);
+
+  // this makes sure the cache revalidates when products are deleted.
+  revalidatePath("/");
+  revalidatePath("/products");
 }
