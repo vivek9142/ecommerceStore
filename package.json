@@ -9,7 +9,8 @@
     "lint": "next lint",
     "prisma": "npx prisma studio",
     "strlogin": "stripe login",
-    "stripe-webhook": "stripe listen --forward-to localhost:3000/webhooks/stripe"
+    "stripe-webhook": "stripe listen --forward-to localhost:3000/webhooks/stripe",
+    "email": "cp .env ./node_modules/react-email && email dev --dir src/email --port 3001"
   },
   "dependencies": {
     "@prisma/client": "^5.14.0",
