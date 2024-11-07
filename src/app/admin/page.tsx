@@ -50,9 +50,9 @@ async function getProductData() {
     inactiveCount,
   };
 }
-export function wait(duration: number) {
-  return new Promise((resolve) => setTimeout(resolve, duration));
-}
+// export function wait(duration: number) {
+//   return new Promise((resolve) => setTimeout(resolve, duration));
+// }
 
 export default async function AdminDashboard() {
   const [salesData, userData, productData] = await Promise.all([
