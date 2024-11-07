@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "prisma": "npx prisma studio",
+    "postinstall": "npx prisma generate",
     "strlogin": "stripe login",
     "stripe-webhook": "stripe listen --forward-to localhost:3000/webhooks/stripe",
     "email": "cp .env ./node_modules/react-email && email dev --dir src/email --port 3001"
