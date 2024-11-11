@@ -18,14 +18,28 @@ export async function GET(
       new URL("/products/download/expired", req.url)
     );
 
-  const { size } = await fs.stat(data.product.filePath);
-  const file = await fs.readFile(data.product.filePath);
-  const extension = data.product.filePath.split(".").pop();
+  const response = await fetch(data.product.filePath);
+  if (!response.ok)
+    throw new Error(`unexpected response ${response.statusText}`);
 
-  return new NextResponse(file, {
+  // const { size } = await fs.stat(data.product.filePath);
+  // const file = await fs.readFile(data.product.filePath);
+  // const extension = data.product.filePath.split(".").pop();
+
+  // return new NextResponse(file, {
+  //   headers: {
+  //     "Content-Disposition": `attachment; filename="${data.product.name}.${extension}"`,
+  //     "Content-Length": size.toString(),
+  //   },
+  // });
+
+  const arrFileName = data.product.filePath.split("/");
+  const fileName = arrFileName[arrFileName.length - 1];
+
+  return new NextResponse(response.body, {
     headers: {
-      "Content-Disposition": `attachment; filename="${data.product.name}.${extension}"`,
-      "Content-Length": size.toString(),
+      "Content-Disposition": `attachment; filename="${fileName}"`,
+      // "Content-Length": size.toString()
     },
   });
 }
