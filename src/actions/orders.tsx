@@ -66,6 +66,8 @@ export async function emailOrderHistory(
     react: <OrderHistoryEmail orders={await Promise.all(orders)} />,
   });
 
+  console.log(data);
+
   if (data.error) {
     return { error: "There was an error sending your email. Please try Again" };
   }
